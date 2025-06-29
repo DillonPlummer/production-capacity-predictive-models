@@ -30,7 +30,7 @@ def train_defect_model(df: pd.DataFrame) -> Pipeline:
         raise ValueError("No 'qty_of_defect_*' columns found in DataFrame!")
     roll_defs = [f"{c}_4w_sum" for c in orig_defs]
 
-    # 3) Build feature & target matrices (added "line" and )
+    # 3) Build feature & target matrices (added "line" and "part_number")
     feature_cols = ["build_time_days", "build_time_4w_avg"] + roll_defs + ["part_number", "line"]
     X = df_fe[feature_cols]
     y = df_fe[orig_defs]  # DataFrame with one column per defect

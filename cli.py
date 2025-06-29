@@ -1,12 +1,34 @@
 import click
 from pathlib import Path
 import pandas as pd
-import joblib
-from qualitylab.io.spreadsheets import read_production_data
-from qualitylab.ml.feature_engineering import add_recent_history
-from qualitylab.ml.build_time import train_build_time_model
-from qualitylab.ml.build_quantity import train_build_quantity_model
-from qualitylab.ml.defects import train_defect_model
+from feature_engineering import add_recent_history
+from build_time import train_build_time_model
+from build_quantity import train_build_quantity_model
+from defects import train_defect_model
+
+
+def read_production_data(paths: list[Path]) -> pd.DataFrame:
+    """Read and concatenate production spreadsheets (CSV or Excel)."""
+    frames = []
+    for p in paths:
+        if p.suffix.lower() in {".xls", ".xlsx"}:
+            frames.append(pd.read_excel(p, engine="openpyxl"))
+        else:
+            frames.append(pd.read_csv(p))
+    df = pd.concat(frames, ignore_index=True)
+    df.columns = (
+        df.columns
+          .str.strip()
+          .str.lower()
+          .str.replace(r"[ _]+", "_", regex=True)
+    )
+    for c in ("build_start_date", "build_complete_date"):
+        df[c] = pd.to_datetime(df[c], errors="coerce")
+    df = df.dropna(subset=["build_start_date", "build_complete_date"])
+    df["build_time_days"] = (
+        df["build_complete_date"] - df["build_start_date"]
+    ).dt.total_seconds() / 86400
+    return df
 
 # Paths relative to this package
 PACKAGE_ROOT = Path(__file__).resolve().parent

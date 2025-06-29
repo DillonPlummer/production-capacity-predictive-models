@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "qualitylab=qualitylab.cli:cli",
+            "qualitylab=cli:cli",
         ]
     }
 )
