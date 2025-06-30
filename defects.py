@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.model_selection import train_test_split
 
-from qualitylab.ml.feature_engineering import add_recent_history
+from feature_engineering import add_recent_history
 
 def train_defect_model(df: pd.DataFrame) -> Pipeline:
     """

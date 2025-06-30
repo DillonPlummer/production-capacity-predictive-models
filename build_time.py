@@ -8,7 +8,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-from qualitylab.ml.feature_engineering import add_recent_history
+from feature_engineering import add_recent_history
 
 def train_build_time_model(df: pd.DataFrame) -> Pipeline:
     """

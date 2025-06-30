@@ -1,12 +1,12 @@
 import click
 from pathlib import Path
 import pandas as pd
-import joblib
-from qualitylab.io.spreadsheets import read_production_data
-from qualitylab.ml.feature_engineering import add_recent_history
-from qualitylab.ml.build_time import train_build_time_model
-from qualitylab.ml.build_quantity import train_build_quantity_model
-from qualitylab.ml.defects import train_defect_model
+
+from spreadsheets import read_production_data
+from feature_engineering import add_recent_history
+from build_time import train_build_time_model
+from build_quantity import train_build_quantity_model
+from defects import train_defect_model
 
 # Paths relative to this package
 PACKAGE_ROOT = Path(__file__).resolve().parent
@@ -24,6 +24,7 @@ def cli():
 @cli.command("ingest")
 @click.argument("files", nargs=-1, type=click.Path(exists=True))
 def ingest(files):
+    """Read raw production spreadsheets and store a parquet dataset."""
     df = read_production_data([Path(f) for f in files])
     out_dir = get_data_dir()
     df.to_parquet(out_dir / "production.parquet")
@@ -31,18 +32,18 @@ def ingest(files):
 
 @cli.command("train-build-time")
 def train_build_time():
+    """Train the build-time model using ingested production data."""
     data_path = get_data_dir() / "production.parquet"
     df = pd.read_parquet(data_path)
-    df_fe = add_recent_history(df)
-    train_build_time_model(df_fe)
+    train_build_time_model(df)
     click.echo("✅ Build-time model trained")
 
 @cli.command("train-defects")
 def train_defects():
+    """Train the defect count model using ingested production data."""
     data_path = get_data_dir() / "production.parquet"
     df = pd.read_parquet(data_path)
-    df_fe = add_recent_history(df)
-    train_defect_model(df_fe)
+    train_defect_model(df)
     click.echo("✅ Defect model trained")
 
 @cli.command('train-build-quantity')
@@ -55,7 +56,8 @@ def train_defects():
     help="Paths to downtime sheets (xlsx or csv)."
 )
 def train_build_quantity(prod_files, downtime_files):
-     # ingest production & downtime
+    """Train the build quantity model using production and downtime data."""
+    # ingest production & downtime
     df_prod = read_production_data([Path(f) for f in prod_files])
     df_prod = add_recent_history(df_prod)
     # train and save

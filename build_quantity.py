@@ -8,8 +8,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-from qualitylab.ml.feature_engineering import merge_downtime_features
-from qualitylab.io.spreadsheets         import read_downtime_data
+from feature_engineering import merge_downtime_features
+from spreadsheets import read_downtime_data
 
 def train_build_quantity_model(
     df_prod: pd.DataFrame,

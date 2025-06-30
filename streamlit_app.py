@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import joblib
 from lime.lime_tabular import LimeTabularExplainer
-from qualitylab.ml.feature_engineering import add_recent_history, merge_downtime_features
+from feature_engineering import add_recent_history, merge_downtime_features
 from upsetplot import from_indicators, UpSet
 
 
